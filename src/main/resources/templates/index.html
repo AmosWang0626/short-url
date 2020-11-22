@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Short URL</title>
+    <script>
+        const match = /^(http|ftp|https):\/\/[\w\-]+(\.[\w\-]+)+([\w\-.,@?^=%&:\/~+#]*[\w\-@?^=%&\/~+#])?$/;
+
+        function submitUrl() {
+            const value = document.getElementById("url").value;
+
+            if (match.test(value)) {
+                let xhr = new XMLHttpRequest();
+                xhr.open("post", "/short/url/");
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.send("url=" + value);
+                xhr.onload = function () {
+                    if (xhr.response) {
+                        document.getElementById("shortUrl").innerHTML = xhr.response;
+                        document.getElementById("shortUrl").href = xhr.response;
+                        document.getElementById("shortUrl").target = "_blank";
+                    }
+                };
+                xhr.onerror = function () {
+                    alert("error: " + xhr.status);
+                };
+            } else {
+                alert("请输入正确的URL！");
+            }
+        }
+    </script>
+    <style>
+        .url {
+            height: 80px;
+            width: 300px;
+        }
+
+        .submit_btn {
+            width: 60px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>短链接</h1>
+
+<div>
+    <label for="url">要转换的短链接</label>
+    <input id="url" class="url" type="url"/>
+    <button id="submit" class="submit_btn" type="button" onclick="submitUrl()">提交</button>
+</div>
+
+<div>
+    <a id="shortUrl" href=""></a>
+</div>
+
+</body>
+</html>
