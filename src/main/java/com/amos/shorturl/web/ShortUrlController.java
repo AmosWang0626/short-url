@@ -2,6 +2,7 @@ package com.amos.shorturl.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.util.UriEncoder;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,8 +64,7 @@ public class ShortUrlController {
             return "404";
         }
 
-        // FIXME 此处需要兼容 URL 中含有中文的情况
-        return "redirect:" + url;
+        return "redirect:" + UriEncoder.encode(url);
     }
 
 

@@ -2,7 +2,13 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <title>Short URL</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" th:href="@{/index/css/bootstrap.min.css}">
+    <!-- 引入组件库 -->
+    <script th:src="@{/index/jquery-3.5.1.min.js}"></script>
+    <script th:src="@{/index/js/bootstrap.min.js}"></script>
     <script>
         const match = /^(http|ftp|https):\/\/[\w\-]+(\.[\w\-]+)+([\w\-.,@?^=%&:\/~+#]*[\w\-@?^=%&\/~+#])?$/;
 
@@ -29,30 +35,28 @@
             }
         }
     </script>
-    <style>
-        .url {
-            height: 80px;
-            width: 300px;
-        }
-
-        .submit_btn {
-            width: 60px;
-            height: 30px;
-        }
-    </style>
 </head>
 <body>
+<div class="container">
+    <h1>短链接</h1>
 
-<h1>短链接</h1>
+    <div class="form-group">
+        <label for="url"></label>
+        <input id="url" type="url" class="form-control" placeholder="请输入要转换的链接">
+    </div>
 
-<div>
-    <label for="url">要转换的短链接</label>
-    <input id="url" class="url" type="url"/>
-    <button id="submit" class="submit_btn" type="button" onclick="submitUrl()">提交</button>
-</div>
+    <div class="form-group">
+        <button class="btn btn-primary" onclick="submitUrl()">提交</button>
+    </div>
 
-<div>
-    <a id="shortUrl" href=""></a>
+    <div class="row">
+        <div class="col-md-2">生成的链接</div>
+        <div class="col-md-10" style="text-align: left">
+            <address>
+                <a id="shortUrl" href=""></a>
+            </address>
+        </div>
+    </div>
 </div>
 
 </body>
