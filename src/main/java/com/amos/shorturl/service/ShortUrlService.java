@@ -1,7 +1,7 @@
 package com.amos.shorturl.service;
 
-import com.amos.shorturl.adapter.ShortUrlForm;
-import com.amos.shorturl.adapter.ShortUrlVO;
+import com.amos.shorturl.adapter.model.ShortUrlForm;
+import com.amos.shorturl.adapter.model.ShortUrlVO;
 import com.amos.shorturl.common.api.CommonResponse;
 
 /**

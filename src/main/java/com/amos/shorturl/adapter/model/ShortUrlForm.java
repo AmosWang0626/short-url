@@ -1,4 +1,4 @@
-package com.amos.shorturl.adapter;
+package com.amos.shorturl.adapter.model;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,8 +1,8 @@
 package com.amos.shorturl.service.impl;
 
-import com.amos.shorturl.adapter.ShortUrlAlgorithm;
-import com.amos.shorturl.adapter.ShortUrlForm;
-import com.amos.shorturl.adapter.ShortUrlVO;
+import com.amos.shorturl.adapter.algorithm.UniqueShortUrl;
+import com.amos.shorturl.adapter.model.ShortUrlForm;
+import com.amos.shorturl.adapter.model.ShortUrlVO;
 import com.amos.shorturl.common.api.CommonResponse;
 import com.amos.shorturl.domain.ShortUrlDao;
 import com.amos.shorturl.domain.ShortUrlEntity;
@@ -39,6 +39,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             form.setExpire(-1);
         }
 
+        // 如果设有过期时间-则生成过期时间戳
         if (form.getExpire() != -1) {
             long expireTime = form.getTimeUnit()
                     .setTime(LocalDateTime.now(), form.getExpire())
@@ -48,9 +49,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             entity.setExpireTime(expireTime);
         }
 
+        entity.setUrl(UniqueShortUrl.getShortUrl(entity.getFullUrl()));
         shortUrlDao.save(entity);
-
-        entity.setUrl(ShortUrlAlgorithm.random(entity.getFullUrl()));
 
         ShortUrlVO shortUrlVO = new ShortUrlVO();
         shortUrlVO.setUrl(baseUrl + entity.getUrl());
@@ -63,4 +63,5 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
         return null;
     }
+
 }

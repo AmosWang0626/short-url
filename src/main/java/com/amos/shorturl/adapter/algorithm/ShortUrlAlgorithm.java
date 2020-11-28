@@ -1,4 +1,4 @@
-package com.amos.shorturl.adapter;
+package com.amos.shorturl.adapter.algorithm;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -15,12 +15,6 @@ public class ShortUrlAlgorithm {
     private static final Integer LENGTH = 6;
 
     private final static String[] HEX_DIGITS = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
-
-    public static String random(String fullUrl) {
-        String[] strings = shortText(fullUrl);
-
-        return strings[new Random().nextInt(strings.length)];
-    }
 
     public static String[] shortText(String string) {
         String key = "AMOS";
