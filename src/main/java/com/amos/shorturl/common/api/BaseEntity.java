@@ -31,7 +31,7 @@ public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(generator = "base_uuid")
-    @GenericGenerator(name = "base_uuid", strategy = "uuid")
+    @GenericGenerator(name = "base_uuid", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
     @CreatedDate

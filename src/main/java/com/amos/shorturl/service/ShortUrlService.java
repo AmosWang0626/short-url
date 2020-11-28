@@ -4,6 +4,8 @@ import com.amos.shorturl.adapter.model.ShortUrlForm;
 import com.amos.shorturl.adapter.model.ShortUrlVO;
 import com.amos.shorturl.common.api.CommonResponse;
 
+import java.util.List;
+
 /**
  * DESCRIPTION: 短链接
  *
@@ -26,6 +28,13 @@ public interface ShortUrlService {
      * @param key 短链接key
      * @return 短链接信息
      */
-    CommonResponse<ShortUrlVO> find(String key);
+    CommonResponse<String> find(String key);
+
+    /**
+     * 查看所有短链接
+     *
+     * @return List<短链接信息>
+     */
+    CommonResponse<List<ShortUrlVO>> findAll();
 
 }

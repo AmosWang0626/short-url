@@ -1,6 +1,6 @@
 package com.amos.shorturl.adapter.algorithm;
 
-import com.amos.shorturl.adapter.context.SpringBeanUtils;
+import com.amos.shorturl.common.util.SpringBeanUtils;
 import com.amos.shorturl.domain.ShortUrlDao;
 import com.amos.shorturl.domain.ShortUrlEntity;
 import org.slf4j.Logger;

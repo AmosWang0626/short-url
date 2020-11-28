@@ -18,6 +18,8 @@ public class ShortUrlAlgorithm {
 
     public static String[] shortText(String string) {
         String key = "AMOS";
+        // 26 x 2 + 10 = 62
+        // 62 ^ 6 = 56,800,235,584 约等于 568亿
         String[] chars = new String[]{
                 "a", "b", "c", "d", "e", "f", "g", "h",
                 "i", "j", "k", "l", "m", "n", "o", "p",

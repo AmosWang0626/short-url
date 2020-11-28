@@ -1,11 +1,19 @@
 package com.amos.shorturl.web;
 
+import com.amos.shorturl.adapter.model.ShortUrlForm;
+import com.amos.shorturl.adapter.model.ShortUrlVO;
+import com.amos.shorturl.common.api.CommonResponse;
+import com.amos.shorturl.service.ShortUrlService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.util.UriEncoder;
+import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * DESCRIPTION: 短链接 controller
@@ -13,22 +21,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author <a href="mailto:daoyuan0626@gmail.com">amos.wang</a>
  * @date 2020/11/22
  */
+@Api(tags = "短链接")
 @Controller
-@RequestMapping("short/url")
 public class ShortUrlController {
 
-    private static final Map<String, String> MAP = new ConcurrentHashMap<>();
-
-    private static final String BASE_URL = "http://localhost:8080/short/url/";
-
-    static {
-        MAP.put("0", "https://amos.wang");
-    }
+    @Resource
+    private ShortUrlService shortUrlService;
 
 
     /**
      * 短链接添加页面
      */
+    @ApiIgnore
     @GetMapping
     public String index() {
         return "index";
@@ -40,17 +44,17 @@ public class ShortUrlController {
      */
     @PostMapping
     @ResponseBody
-    public String add(String url) {
-        for (Map.Entry<String, String> entry : MAP.entrySet()) {
-            if (entry.getValue().equals(url)) {
-                return BASE_URL + entry.getKey();
-            }
+    @ApiOperation("生成短链接")
+    public CommonResponse<ShortUrlVO> add(@RequestBody ShortUrlForm form) {
+        if (StringUtils.isBlank(form.getFullUrl())) {
+            return CommonResponse.fail();
         }
 
-        String key = String.valueOf(MAP.size());
-        MAP.put(key, url);
+        // 解码-避免前端传来数据已转码
+        String fullUrl = UriEncoder.decode(form.getFullUrl());
+        form.setFullUrl(fullUrl);
 
-        return BASE_URL + key;
+        return shortUrlService.save(form);
     }
 
 
@@ -58,13 +62,16 @@ public class ShortUrlController {
      * 短链接访问
      */
     @GetMapping("{key}")
+    @ApiOperation("访问短链接")
     public String get(@PathVariable("key") String key) {
-        String url = MAP.get(key);
-        if (url == null) {
+        CommonResponse<String> response = shortUrlService.find(key);
+
+        if (!response.isSuccess()) {
             return "404";
         }
 
-        return "redirect:" + UriEncoder.encode(url);
+        // URL转码
+        return "redirect:" + UriEncoder.encode(response.getData());
     }
 
 
@@ -73,9 +80,10 @@ public class ShortUrlController {
      */
     @GetMapping("all")
     @ResponseBody
-    public Map<String, String> all() {
+    @ApiOperation("获取所有短链接")
+    public CommonResponse<List<ShortUrlVO>> all() {
 
-        return MAP;
+        return shortUrlService.findAll();
     }
 
 }

@@ -37,4 +37,8 @@ public class CommonResponse<T> {
         return new CommonResponse<T>().setCode(code).setMessage(message);
     }
 
+    public boolean isSuccess() {
+        return SUCCESS.getCode().equals(getCode());
+    }
+
 }

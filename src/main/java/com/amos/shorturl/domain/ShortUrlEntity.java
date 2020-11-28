@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
@@ -17,21 +19,27 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Table(name = "dev_short_url")
+@Table(name = "dev_short_url", indexes = {
+        @Index(columnList = "url"),
+        @Index(columnList = "fullUrl")
+})
 @Accessors(chain = true)
 public class ShortUrlEntity extends BaseEntity {
 
     /**
      * 短链接
      */
+    @Column(nullable = false)
     private String url;
     /**
      * 完整链接
      */
+    @Column(nullable = false)
     private String fullUrl;
     /**
      * 过期时间-时间戳（-1表示永久有效）
      */
+    @Column(nullable = false)
     private Long expireTime;
 
 }

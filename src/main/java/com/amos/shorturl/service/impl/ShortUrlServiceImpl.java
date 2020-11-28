@@ -4,6 +4,7 @@ import com.amos.shorturl.adapter.algorithm.UniqueShortUrl;
 import com.amos.shorturl.adapter.model.ShortUrlForm;
 import com.amos.shorturl.adapter.model.ShortUrlVO;
 import com.amos.shorturl.common.api.CommonResponse;
+import com.amos.shorturl.common.util.DateUtils;
 import com.amos.shorturl.domain.ShortUrlDao;
 import com.amos.shorturl.domain.ShortUrlEntity;
 import com.amos.shorturl.service.ShortUrlService;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * DESCRIPTION: 短链接服务实现
@@ -21,7 +24,7 @@ import java.time.ZoneOffset;
  * @author <a href="mailto:daoyuan0626@gmail.com">amos.wang</a>
  * @date 2020/11/26
  */
-@Service
+@Service("shortUrlService")
 public class ShortUrlServiceImpl implements ShortUrlService {
 
     @Value("${short.url.base_url}")
@@ -34,34 +37,56 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     public CommonResponse<ShortUrlVO> save(ShortUrlForm form) {
         ShortUrlEntity entity = new ShortUrlEntity();
         entity.setFullUrl(form.getFullUrl());
+        entity.setExpireTime(-1L);
 
         if (form.getExpire() == null || form.getTimeUnit() == null) {
             form.setExpire(-1);
         }
 
-        // 如果设有过期时间-则生成过期时间戳
-        if (form.getExpire() != -1) {
-            long expireTime = form.getTimeUnit()
-                    .setTime(LocalDateTime.now(), form.getExpire())
-                    .toInstant(ZoneOffset.of("+8"))
-                    .toEpochMilli();
+        // 校验 full_url, 存在就直接返回
+        Optional<ShortUrlEntity> byFullUrl = shortUrlDao.findByFullUrl(entity.getFullUrl());
+        if (byFullUrl.isPresent()) {
+            return CommonResponse.success(parseVO(byFullUrl.get()));
+        }
 
-            entity.setExpireTime(expireTime);
+        // 设置过期时间（时间戳）
+        if (form.getExpire() != -1) {
+            LocalDateTime expireDateTime = form.getTimeUnit().setTime(LocalDateTime.now(), form.getExpire());
+            entity.setExpireTime(DateUtils.toTimeMillis(expireDateTime));
         }
 
         entity.setUrl(UniqueShortUrl.getShortUrl(entity.getFullUrl()));
         shortUrlDao.save(entity);
 
-        ShortUrlVO shortUrlVO = new ShortUrlVO();
-        shortUrlVO.setUrl(baseUrl + entity.getUrl());
-        return CommonResponse.success(shortUrlVO);
+        return CommonResponse.success(parseVO(entity));
     }
 
     @Override
     @Cacheable(value = "short:url", cacheManager = "caffeine", key = "'short_url_' + #key")
-    public CommonResponse<ShortUrlVO> find(String key) {
+    public CommonResponse<String> find(String key) {
+        Optional<ShortUrlEntity> byUrl = shortUrlDao.findByUrl(key);
+        if (byUrl.isPresent()) {
+            return CommonResponse.success(byUrl.get().getFullUrl());
+        }
 
-        return null;
+        return CommonResponse.FAIL;
     }
 
+    @Override
+    public CommonResponse<List<ShortUrlVO>> findAll() {
+        List<ShortUrlEntity> all = shortUrlDao.findAll();
+        List<ShortUrlVO> list = all.stream()
+                .map(this::parseVO)
+                .collect(Collectors.toList());
+
+        return CommonResponse.success(list);
+    }
+
+    private ShortUrlVO parseVO(ShortUrlEntity entity) {
+
+        return new ShortUrlVO()
+                .setUrl(baseUrl + entity.getUrl())
+                .setFullUrl(entity.getFullUrl())
+                .setExpireInfo(entity.getExpireTime() == -1 ? "永久有效" : DateUtils.toString(entity.getExpireTime()));
+    }
 }

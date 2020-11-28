@@ -1,4 +1,4 @@
-package com.amos.shorturl.adapter.context;
+package com.amos.shorturl.common.util;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;

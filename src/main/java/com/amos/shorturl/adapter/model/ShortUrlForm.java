@@ -1,5 +1,7 @@
 package com.amos.shorturl.adapter.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -13,19 +15,23 @@ import lombok.experimental.Accessors;
 @Setter
 @Getter
 @Accessors(chain = true)
+@ApiModel("生成短链接表单")
 public class ShortUrlForm {
 
     /**
      * 长链接
      */
+    @ApiModelProperty(value = "长链接", required = true, example = "https://amos.wang/")
     private String fullUrl;
     /**
      * 时间（-1表示永久有效）
      */
+    @ApiModelProperty(value = "时间（-1表示永久有效）", required = true, example = "-1")
     private Integer expire;
     /**
      * 时间单位
      */
+    @ApiModelProperty(value = "时间单位", example = "HOUR")
     private TimeUnitEnum timeUnit;
 
 }

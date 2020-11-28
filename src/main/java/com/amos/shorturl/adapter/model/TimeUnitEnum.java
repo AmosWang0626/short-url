@@ -28,17 +28,17 @@ public enum TimeUnitEnum {
         public LocalDateTime setTime(LocalDateTime time, Integer expire) {
             return time.plusDays(expire);
         }
-    }, HOURS {
+    }, HOUR {
         @Override
         public LocalDateTime setTime(LocalDateTime time, Integer expire) {
             return time.plusHours(expire);
         }
-    }, MINUTES {
+    }, MINUTE {
         @Override
         public LocalDateTime setTime(LocalDateTime time, Integer expire) {
             return time.plusMinutes(expire);
         }
-    }, SECONDS {
+    }, SECOND {
         @Override
         public LocalDateTime setTime(LocalDateTime time, Integer expire) {
             return time.plusSeconds(expire);

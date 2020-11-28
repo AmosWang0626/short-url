@@ -1,5 +1,7 @@
 package com.amos.shorturl.adapter.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -15,27 +17,23 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Setter
 @Getter
 @Accessors(chain = true)
+@ApiModel("获取短链接详细信息")
 public class ShortUrlVO {
 
     /**
      * 短链接
      */
+    @ApiModelProperty(value = "短链接")
     private String url;
     /**
      * 长链接
      */
+    @ApiModelProperty(value = "长链接")
     private String fullUrl;
-    /**
-     * 时间（-1表示永久有效）
-     */
-    private Integer expire;
-    /**
-     * 时间单位
-     */
-    private TimeUnitEnum timeUnit;
     /**
      * 过期时间信息
      */
+    @ApiModelProperty(value = "短链接过期时间")
     private String expireInfo;
 
     @Override

@@ -1,6 +1,6 @@
 package com.amos.shorturl.domain;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -12,7 +12,7 @@ import java.util.Optional;
  * @date 2020/11/26
  */
 @Repository
-public interface ShortUrlDao extends CrudRepository<ShortUrlEntity, String> {
+public interface ShortUrlDao extends JpaRepository<ShortUrlEntity, String> {
 
     Optional<ShortUrlEntity> findByUrl(String shortUrl);
 
