@@ -32,7 +32,7 @@ public class LocalCache {
                 .maximumSize(100)
                 // 删除缓存原因
                 .removalListener((key, value, cause) -> LOGGER.info(">>> 删除缓存 [{}]({}), reason is [{}]", key, value, cause))
-                // 开启状态监控 [ 这样下边才能使用 CACHE.stats() ]
+                // 开启状态监控
                 .recordStats()
         );
 
