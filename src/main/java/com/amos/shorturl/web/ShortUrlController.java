@@ -3,7 +3,7 @@ package com.amos.shorturl.web;
 import com.amos.shorturl.adapter.model.ShortUrlForm;
 import com.amos.shorturl.adapter.model.ShortUrlVO;
 import com.amos.shorturl.common.api.CommonResponse;
-import com.amos.shorturl.service.ShortUrlService;
+import com.amos.shorturl.service.ShortUrlBusiness;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ShortUrlController {
 
     @Resource
-    private ShortUrlService shortUrlService;
+    private ShortUrlBusiness shortUrlBusiness;
 
 
     /**
@@ -54,7 +54,7 @@ public class ShortUrlController {
         String fullUrl = UriEncoder.decode(form.getFullUrl());
         form.setFullUrl(fullUrl);
 
-        return shortUrlService.save(form);
+        return shortUrlBusiness.save(form);
     }
 
 
@@ -64,7 +64,7 @@ public class ShortUrlController {
     @GetMapping("{key}")
     @ApiOperation("访问短链接")
     public String get(@PathVariable("key") String key) {
-        CommonResponse<String> response = shortUrlService.find(key);
+        CommonResponse<String> response = shortUrlBusiness.find(key);
 
         if (!response.isSuccess()) {
             return "404";
@@ -83,7 +83,7 @@ public class ShortUrlController {
     @ApiOperation("获取所有短链接")
     public CommonResponse<List<ShortUrlVO>> all() {
 
-        return shortUrlService.findAll();
+        return shortUrlBusiness.findAll();
     }
 
 }
