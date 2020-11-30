@@ -35,6 +35,11 @@ public class ShortUrlVO {
      */
     @ApiModelProperty(value = "短链接过期时间")
     private String expireInfo;
+    /**
+     * 过期时间
+     */
+    @ApiModelProperty(value = "过期时间-时间戳")
+    private Long expireTime;
 
     @Override
     public String toString() {

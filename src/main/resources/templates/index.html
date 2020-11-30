@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <title>Short URL</title>
     <!--<script src="//vuejs.org/js/vue.min.js"></script>
-    <link rel="stylesheet" href="//unpkg.com/view-design/dist/styles/iview.css">
     <script src="//unpkg.com/view-design/dist/iview.min.js"></script>-->
     <script th:src="@{/index/vue.min.js}"></script>
-    <link rel="stylesheet" th:href="@{/index/iview.css}">
+    <link rel="stylesheet" href="//unpkg.com/view-design/dist/styles/iview.css">
     <script th:src="@{/index/iview.min.js}"></script>
 </head>
 <body>
@@ -24,6 +23,21 @@
             <div style="margin: 10px 0 20px 0">
                 <i-input v-model="url" type="url" size="large" placeholder="请输入要转换的链接" style="width: 500px"></i-input>
                 <i-button type="primary" @click="submitUrl">提交</i-button>
+
+                <br><br>
+
+                <!-- 时间 -->
+                <input-number v-model="expire" :min="-1" style="width: 80px"></input-number>
+
+                <!-- 时间单位 -->
+                <i-select v-model="timeUnit" clearable style="width: 80px">
+                    <i-option v-for="item in timeUnitList" :value="item.key" :key="item.value">
+                        {{ item.value }}
+                    </i-option>
+                </i-select>
+
+                <span>失效时间：</span>
+                <i-time :time="expireTime" :interval="1" v-if="expireTime !== -1"></i-time>
             </div>
         </i-col>
     </i-row>
@@ -51,15 +65,23 @@
         data: {
             url: "",
             shortUrl: "",
+            expire: -1,
+            timeUnit: "",
+            // time unit
+            timeUnitList: [],
+            // TABLE
             columnList: [
-                {title: '#', type: 'index', width: 50},
-                {title: '短链接', key: 'url', type: 'html'},
+                {title: '#', type: 'index', width: 60},
+                {title: '短链接', key: 'url'},
                 {title: '长链接', key: 'fullUrl', resizable: true},
-                {title: '过期时间', key: 'expireInfo', width: 180}
+                {title: '过期时间', key: 'expireInfo', type: 'html', width: 180}
             ],
-            dataList: []
+            dataList: [],
+            // test info
+            expireTime: -1
         },
         created() {
+            this.getTimeUnitList();
             this.getAll();
         },
         methods: {
@@ -72,12 +94,20 @@
                     return;
                 }
 
+                // 时间单位为空，则无条件设置过期时间为 -1
+                let expire = _this.expire, timeUnit = _this.timeUnit;
+                if (!_this.timeUnit) {
+                    expire = -1;
+                    timeUnit = "YEAR";
+                }
+
                 let xhr = new XMLHttpRequest();
                 xhr.open("post", "/");
                 xhr.setRequestHeader('Content-type', 'application/json');
                 xhr.send(JSON.stringify({
                     fullUrl: _this.url,
-                    expire: -1
+                    expire: expire,
+                    timeUnit: timeUnit
                 }));
 
                 xhr.onload = function () {
@@ -85,6 +115,8 @@
                         const res = JSON.parse(xhr.response)
                         if (res.success) {
                             _this.shortUrl = res.data.url;
+                            _this.expireTime = res.data.expireTime;
+                            _this.getAll();
                         } else {
                             _this.$Message.error(res.message);
                         }
@@ -108,6 +140,29 @@
                         const res = JSON.parse(xhr.response)
                         if (res.success) {
                             _this.dataList = res.data;
+                        } else {
+                            _this.$Message.error(res.message);
+                        }
+                    }
+                };
+
+                xhr.onerror = function () {
+                    _this.$Message.error("error: " + xhr.status);
+                };
+            },
+            getTimeUnitList: function () {
+                const _this = this;
+
+                let xhr = new XMLHttpRequest();
+                xhr.open("get", "/config/timeUnit");
+                xhr.setRequestHeader('Content-type', 'application/json');
+                xhr.send();
+
+                xhr.onload = function () {
+                    if (xhr.response) {
+                        const res = JSON.parse(xhr.response)
+                        if (res.success) {
+                            _this.timeUnitList = res.data;
                         } else {
                             _this.$Message.error(res.message);
                         }
