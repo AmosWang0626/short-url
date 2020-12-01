@@ -86,7 +86,18 @@ public class ShortUrlBusinessImpl implements ShortUrlBusiness {
         return new ShortUrlVO()
                 .setUrl(baseUrl + entity.getUrl())
                 .setFullUrl(entity.getFullUrl())
-                .setExpireInfo(entity.getExpireTime() == -1 ? "永久有效" : DateUtils.toString(entity.getExpireTime()))
+                .setExpireInfo(expireInfo(entity.getExpireTime()))
                 .setExpireTime(entity.getExpireTime());
+    }
+
+    private String expireInfo(Long expireTime) {
+        if (expireTime == -1) {
+            return "永久有效";
+        }
+        if (expireTime < System.currentTimeMillis()) {
+            return "已过期";
+        }
+
+        return DateUtils.toString(expireTime);
     }
 }
