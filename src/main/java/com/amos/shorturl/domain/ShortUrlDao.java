@@ -20,10 +20,8 @@ public interface ShortUrlDao extends JpaRepository<ShortUrlEntity, String> {
 
     Optional<ShortUrlEntity> findByFullUrl(String fullUrl);
 
-    
-    @Override
     @Query("select e from #{#entityName} e where e.deleteFlag = 0")
-    List<ShortUrlEntity> findAll();
+    List<ShortUrlEntity> findAllValid();
 
     @Query("select e from #{#entityName} e where e.deleteFlag = 0 and e.expireTime <> -1")
     List<ShortUrlEntity> findHaveExpireTime();

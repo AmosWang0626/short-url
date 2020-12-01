@@ -42,6 +42,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
     @Override
     public List<ShortUrlEntity> findAll() {
-        return shortUrlDao.findAll();
+        return shortUrlDao.findAllValid();
     }
 }
