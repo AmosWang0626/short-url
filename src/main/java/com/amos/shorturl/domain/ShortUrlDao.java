@@ -16,14 +16,16 @@ import java.util.Optional;
 @Repository
 public interface ShortUrlDao extends JpaRepository<ShortUrlEntity, String> {
 
+    @Query("select e from #{#entityName} e where e.url = ?1 and e.deleteFlag = 0")
     Optional<ShortUrlEntity> findByUrl(String shortUrl);
 
+    @Query("select e from #{#entityName} e where e.fullUrl = ?1 and e.deleteFlag = 0")
     Optional<ShortUrlEntity> findByFullUrl(String fullUrl);
 
     @Query("select e from #{#entityName} e where e.deleteFlag = 0")
     List<ShortUrlEntity> findAllValid();
 
-    @Query("select e from #{#entityName} e where e.deleteFlag = 0 and e.expireTime <> -1")
+    @Query("select e from #{#entityName} e where e.expireTime <> -1 and e.deleteFlag = 0")
     List<ShortUrlEntity> findHaveExpireTime();
 
     @Query("select e from #{#entityName} e where e.expireTime <> -1 and e.expireTime < ?1 and e.deleteFlag = 0")
