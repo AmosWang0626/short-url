@@ -1,7 +1,9 @@
 package com.amos.shorturl.common.util;
 
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * DESCRIPTION: Context
@@ -9,14 +11,10 @@ import org.springframework.context.annotation.Configuration;
  * @author <a href="mailto:daoyuan0626@gmail.com">amos.wang</a>
  * @date 2020/11/28
  */
-@Configuration
-public class SpringBeanUtils {
+@Component
+public class SpringBeanUtils implements ApplicationContextAware {
 
-    private static ApplicationContext applicationContext;
-
-    public SpringBeanUtils(ApplicationContext applicationContext) {
-        SpringBeanUtils.applicationContext = applicationContext;
-    }
+    private static ApplicationContext applicationContext = null;
 
     public static <T> T getBean(String name, Class<T> requiredType) {
         return applicationContext.getBean(name, requiredType);
@@ -26,4 +24,8 @@ public class SpringBeanUtils {
         return applicationContext.getBean(requiredType);
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        SpringBeanUtils.applicationContext = applicationContext;
+    }
 }

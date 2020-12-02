@@ -21,7 +21,7 @@ public class UniqueShortUrl {
 
 
     /**
-     * 获取短链接-653
+     * 获取短链接
      *
      * @param fullUrl 完整链接
      * @return 短链接
