@@ -2,7 +2,6 @@ package com.amos.shorturl.web;
 
 import com.amos.shorturl.adapter.model.ShortUrlForm;
 import com.amos.shorturl.adapter.model.ShortUrlVO;
-import com.amos.shorturl.common.api.CommonResponse;
 import com.amos.shorturl.service.ShortUrlBusiness;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +12,7 @@ import org.yaml.snakeyaml.util.UriEncoder;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -45,12 +45,8 @@ public class ShortUrlController {
     @PostMapping
     @ResponseBody
     @ApiOperation("生成短链接")
-    public CommonResponse<ShortUrlVO> add(@RequestBody ShortUrlForm form) {
-        if (StringUtils.isBlank(form.getFullUrl())) {
-            return CommonResponse.fail();
-        }
-
-        // 解码-避免前端传来数据已转码
+    public ShortUrlVO add(@Valid @RequestBody ShortUrlForm form) {
+        // 解码
         String fullUrl = UriEncoder.decode(form.getFullUrl());
         form.setFullUrl(fullUrl);
 
@@ -64,14 +60,14 @@ public class ShortUrlController {
     @GetMapping("{key}")
     @ApiOperation("访问短链接")
     public String get(@PathVariable("key") String key) {
-        CommonResponse<String> response = shortUrlBusiness.find(key);
+        String fullUrl = shortUrlBusiness.find(key);
 
-        if (!response.isSuccess()) {
+        if (StringUtils.isBlank(fullUrl)) {
             return "404";
         }
 
-        // URL转码
-        return "redirect:" + UriEncoder.encode(response.getData());
+        // 编码
+        return "redirect:" + UriEncoder.encode(fullUrl);
     }
 
 
@@ -81,7 +77,7 @@ public class ShortUrlController {
     @GetMapping("all")
     @ResponseBody
     @ApiOperation("获取所有短链接")
-    public CommonResponse<List<ShortUrlVO>> all() {
+    public List<ShortUrlVO> all() {
 
         return shortUrlBusiness.findAll();
     }

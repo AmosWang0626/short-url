@@ -26,7 +26,7 @@ public interface ShortUrlService {
      * @param shortUrl 短链接
      * @return 短链接
      */
-    Optional<String> find(String shortUrl);
+    String find(String shortUrl);
 
     /**
      * 根据短链接查询

@@ -2,7 +2,6 @@ package com.amos.shorturl.service;
 
 import com.amos.shorturl.adapter.model.ShortUrlForm;
 import com.amos.shorturl.adapter.model.ShortUrlVO;
-import com.amos.shorturl.common.api.CommonResponse;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public interface ShortUrlBusiness {
      * @param form 短链接表单
      * @return 短链接信息
      */
-    CommonResponse<ShortUrlVO> save(ShortUrlForm form);
+    ShortUrlVO save(ShortUrlForm form);
 
     /**
      * 查询短链接
@@ -28,13 +27,13 @@ public interface ShortUrlBusiness {
      * @param key 短链接key
      * @return 短链接信息
      */
-    CommonResponse<String> find(String key);
+    String find(String key);
 
     /**
      * 查看所有短链接
      *
      * @return List<短链接信息>
      */
-    CommonResponse<List<ShortUrlVO>> findAll();
+    List<ShortUrlVO> findAll();
 
 }

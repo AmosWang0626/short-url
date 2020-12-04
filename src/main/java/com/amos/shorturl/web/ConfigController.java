@@ -2,7 +2,6 @@ package com.amos.shorturl.web;
 
 import com.amos.shorturl.adapter.model.SimpleEntry;
 import com.amos.shorturl.adapter.model.TimeUnitEnum;
-import com.amos.shorturl.common.api.CommonResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,13 +21,13 @@ import java.util.List;
 public class ConfigController {
 
     @GetMapping("timeUnit")
-    public CommonResponse<List<SimpleEntry<String, String>>> timeUnit() {
+    public List<SimpleEntry<String, String>> timeUnit() {
         List<SimpleEntry<String, String>> list = new ArrayList<>();
         Arrays.stream(TimeUnitEnum.values()).forEach(timeUnitEnum -> {
             list.add(new SimpleEntry<>(timeUnitEnum.name(), timeUnitEnum.getName()));
         });
 
-        return CommonResponse.success(list);
+        return list;
     }
 
 }

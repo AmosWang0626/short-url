@@ -26,9 +26,9 @@ public class ShortUrlVO {
     @ApiModelProperty(value = "短链接")
     private String url;
     /**
-     * 长链接
+     * 完整链接
      */
-    @ApiModelProperty(value = "长链接")
+    @ApiModelProperty(value = "完整链接")
     private String fullUrl;
     /**
      * 过期时间信息

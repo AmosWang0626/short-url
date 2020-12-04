@@ -3,7 +3,6 @@ package com.amos.shorturl.service.impl;
 import com.amos.shorturl.adapter.algorithm.UniqueShortUrl;
 import com.amos.shorturl.adapter.model.ShortUrlForm;
 import com.amos.shorturl.adapter.model.ShortUrlVO;
-import com.amos.shorturl.common.api.CommonResponse;
 import com.amos.shorturl.common.util.DateUtils;
 import com.amos.shorturl.domain.ShortUrlEntity;
 import com.amos.shorturl.service.ShortUrlBusiness;
@@ -34,7 +33,7 @@ public class ShortUrlBusinessImpl implements ShortUrlBusiness {
     private ShortUrlService shortUrlService;
 
     @Override
-    public CommonResponse<ShortUrlVO> save(ShortUrlForm form) {
+    public ShortUrlVO save(ShortUrlForm form) {
         ShortUrlEntity entity = new ShortUrlEntity();
         entity.setFullUrl(form.getFullUrl());
         entity.setExpireTime(-1L);
@@ -42,7 +41,7 @@ public class ShortUrlBusinessImpl implements ShortUrlBusiness {
         // 校验 full_url, 存在就直接返回
         Optional<ShortUrlEntity> byFullUrl = shortUrlService.findByFullUrl(entity.getFullUrl());
         if (byFullUrl.isPresent()) {
-            return CommonResponse.success(parseVO(byFullUrl.get()));
+            return parseVO(byFullUrl.get());
         }
 
         // 设置默认过期时间
@@ -59,26 +58,23 @@ public class ShortUrlBusinessImpl implements ShortUrlBusiness {
         entity.setUrl(UniqueShortUrl.getShortUrl(entity.getFullUrl()));
         shortUrlService.save(entity);
 
-        return CommonResponse.success(parseVO(entity));
+        return parseVO(entity);
     }
 
     @Override
     @Cacheable(value = "short:url", cacheManager = "caffeine", key = "'short_url_' + #key")
-    public CommonResponse<String> find(String key) {
+    public String find(String key) {
 
-        return shortUrlService.find(key)
-                .map(CommonResponse::success)
-                .orElse(CommonResponse.FAIL);
+        return shortUrlService.find(key);
     }
 
     @Override
-    public CommonResponse<List<ShortUrlVO>> findAll() {
+    public List<ShortUrlVO> findAll() {
         List<ShortUrlEntity> all = shortUrlService.findAll();
-        List<ShortUrlVO> list = all.stream()
+
+        return all.stream()
                 .map(this::parseVO)
                 .collect(Collectors.toList());
-
-        return CommonResponse.success(list);
     }
 
     private ShortUrlVO parseVO(ShortUrlEntity entity) {

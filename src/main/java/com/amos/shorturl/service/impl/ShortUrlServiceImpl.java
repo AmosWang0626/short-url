@@ -29,10 +29,10 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
     @Override
     @Cacheable(value = "short:url", cacheManager = "redis", key = "'short_url_' + #shortUrl")
-    public Optional<String> find(String shortUrl) {
+    public String find(String shortUrl) {
         Optional<ShortUrlEntity> byUrl = shortUrlDao.findByUrl(shortUrl);
 
-        return byUrl.map(ShortUrlEntity::getFullUrl);
+        return byUrl.map(ShortUrlEntity::getFullUrl).orElse(null);
     }
 
     @Override

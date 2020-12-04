@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * DESCRIPTION: 短链接-Form
  *
@@ -19,13 +23,16 @@ import lombok.experimental.Accessors;
 public class ShortUrlForm {
 
     /**
-     * 长链接
+     * 完整链接
      */
-    @ApiModelProperty(value = "长链接", required = true, example = "https://amos.wang/")
+    @NotBlank(message = "链接不能为空")
+    @ApiModelProperty(value = "链接", required = true, example = "https://amos.wang/")
     private String fullUrl;
     /**
      * 时间（-1表示永久有效）
      */
+    @NotNull(message = "过期时间不能为空")
+    @Min(-1)
     @ApiModelProperty(value = "时间（-1表示永久有效）", required = true, example = "-1")
     private Integer expire;
     /**

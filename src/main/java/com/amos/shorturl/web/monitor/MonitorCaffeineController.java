@@ -1,5 +1,6 @@
 package com.amos.shorturl.web.monitor;
 
+import com.amos.shorturl.common.api.CommonResponse;
 import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,12 @@ public class MonitorCaffeineController {
     private CacheManager caffeine;
 
 
+    @GetMapping
+    public String index() {
+
+        return "Hello Caffeine Monitor!";
+    }
+
     @GetMapping("cacheNames")
     @ApiOperation("所有缓存key")
     public Collection<String> cacheNames() {
@@ -39,12 +46,13 @@ public class MonitorCaffeineController {
 
     @GetMapping("stats")
     @ApiOperation("根据缓存key查询缓存监控信息")
-    public Map<String, Object> caffeine(@RequestParam String cacheName) {
+    public CommonResponse<Map<String, Object>> caffeine(@RequestParam String cacheName) {
         CaffeineCache caffeineCache = (CaffeineCache) caffeine.getCache(cacheName);
-        CacheStats stats = CacheStats.empty();
-        if (caffeineCache != null) {
-            stats = caffeineCache.getNativeCache().stats();
+        if (caffeineCache == null) {
+            return CommonResponse.fail(String.format("缓存 [%s] 不存在 !!!", cacheName));
         }
+
+        CacheStats stats = caffeineCache.getNativeCache().stats();
 
         Map<String, Object> map = new HashMap<>(16);
         map.put("请求次数", stats.requestCount());
@@ -57,7 +65,7 @@ public class MonitorCaffeineController {
         map.put("回收总次数", stats.evictionCount());
         map.put("回收总权重", stats.evictionWeight());
 
-        return map;
+        return CommonResponse.success(map);
     }
 
 }

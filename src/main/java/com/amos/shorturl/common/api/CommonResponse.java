@@ -18,6 +18,7 @@ public class CommonResponse<T> {
 
     public static final CommonResponse<String> SUCCESS = new CommonResponse<String>().setCode("200").setMessage("成功");
     public static final CommonResponse<String> FAIL = new CommonResponse<String>().setCode("400").setMessage("失败");
+    public static final CommonResponse<String> ERROR_PARAM = new CommonResponse<String>().setCode("401").setMessage("参数错误");
 
     private String code;
 
@@ -33,8 +34,16 @@ public class CommonResponse<T> {
         return new CommonResponse<T>().setCode(FAIL.getCode()).setMessage(FAIL.getMessage());
     }
 
+    public static <T> CommonResponse<T> fail(String message) {
+        return new CommonResponse<T>().setCode(FAIL.getCode()).setMessage(message);
+    }
+
     public static <T> CommonResponse<T> fail(String code, String message) {
         return new CommonResponse<T>().setCode(code).setMessage(message);
+    }
+
+    public static <T> CommonResponse<T> errorParam(String message) {
+        return new CommonResponse<T>().setCode(ERROR_PARAM.getCode()).setMessage(message);
     }
 
     public boolean isSuccess() {
