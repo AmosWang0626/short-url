@@ -9,8 +9,16 @@ package com.amos.shorturl.service;
 public interface ExpireService {
 
     /**
+     * 添加过期时间信息
+     *
+     * @param shortUrlId 短链接ID
+     * @param expireTime 过期时间
+     */
+    void addExpireInfo(String shortUrlId, Long expireTime);
+
+    /**
      * 初始化过期数据
      */
-    void initExpireJob();
+    void initExpireInfoJob();
 
 }

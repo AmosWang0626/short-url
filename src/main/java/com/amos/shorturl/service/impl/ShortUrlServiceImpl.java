@@ -2,6 +2,7 @@ package com.amos.shorturl.service.impl;
 
 import com.amos.shorturl.domain.ShortUrlDao;
 import com.amos.shorturl.domain.ShortUrlEntity;
+import com.amos.shorturl.service.ExpireService;
 import com.amos.shorturl.service.ShortUrlService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,17 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
     @Resource
     private ShortUrlDao shortUrlDao;
+    @Resource
+    private ExpireService expireService;
 
     @Override
     public void save(ShortUrlEntity entity) {
         shortUrlDao.save(entity);
+
+        // 如果过期时间不为-1，则将其置入Redis
+        if (entity.getExpireTime() != -1) {
+            expireService.addExpireInfo(entity.getId(), entity.getExpireTime());
+        }
     }
 
     @Override
@@ -42,6 +50,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
     @Override
     public List<ShortUrlEntity> findAll() {
-        return shortUrlDao.findAllValid();
+        return shortUrlDao.findValidAll();
     }
 }

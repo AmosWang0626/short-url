@@ -6,11 +6,10 @@ import com.amos.shorturl.service.ExpireService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * DESCRIPTION: 过期数据
@@ -22,32 +21,38 @@ import java.util.stream.Collectors;
 public class ExpireServiceImpl implements ExpireService {
 
     @Resource
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
     @Resource
     private ShortUrlDao shortUrlDao;
 
     private static final String SHORT_URL_EXPIRE = "SHORT_URL_EXPIRE";
 
-    @Override
-    public void initExpireJob() {
-        Optional<List<ShortUrlEntity>> byExpireTime = shortUrlDao.findByExpireTime(System.currentTimeMillis());
-        byExpireTime.ifPresent(shortUrlEntities ->
-                shortUrlDao.saveAll(shortUrlEntities.stream()
-                        .peek(entity -> entity.setDeleteFlag(true))
-                        .collect(Collectors.toList())
-                ));
 
-        List<ShortUrlEntity> all = shortUrlDao.findHaveExpireTime();
-        all.forEach(entity -> redisTemplate.opsForZSet().add(SHORT_URL_EXPIRE, entity.getId(), entity.getExpireTime()));
+    @Override
+    public void addExpireInfo(String shortUrlId, Long expireTime) {
+        redisTemplate.opsForZSet().add(SHORT_URL_EXPIRE, shortUrlId, expireTime);
     }
 
+    @Override
+    public void initExpireInfoJob() {
+        List<ShortUrlEntity> deleteEntities = new ArrayList<>();
+        List<ShortUrlEntity> needInitExpireInfoEntities = new ArrayList<>();
 
-    /**
-     * 初始化 redis 过期数据
-     */
-    @PostConstruct
-    public void initProject() {
-        initExpireJob();
+        Optional<List<ShortUrlEntity>> byExpireTime = shortUrlDao.findAllByExpireTime();
+        byExpireTime.ifPresent(shortUrlEntities -> shortUrlEntities.forEach(shortUrlEntity -> {
+            if (shortUrlEntity.getExpireTime() <= System.currentTimeMillis()) {
+                shortUrlEntity.setDeleteFlag(true);
+                deleteEntities.add(shortUrlEntity);
+            } else {
+                needInitExpireInfoEntities.add(shortUrlEntity);
+            }
+        }));
+
+        // 删除过期数据
+        shortUrlDao.saveAll(deleteEntities);
+
+        // 过期信息保存至 Redis 
+        needInitExpireInfoEntities.forEach(entity -> redisTemplate.opsForZSet().add(SHORT_URL_EXPIRE, entity.getId(), entity.getExpireTime()));
     }
 
 }

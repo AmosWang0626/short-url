@@ -1,6 +1,7 @@
 package com.amos.shorturl.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -23,12 +24,13 @@ public interface ShortUrlDao extends JpaRepository<ShortUrlEntity, String> {
     Optional<ShortUrlEntity> findByFullUrl(String fullUrl);
 
     @Query("select e from #{#entityName} e where e.deleteFlag = 0")
-    List<ShortUrlEntity> findAllValid();
+    List<ShortUrlEntity> findValidAll();
 
     @Query("select e from #{#entityName} e where e.expireTime <> -1 and e.deleteFlag = 0")
-    List<ShortUrlEntity> findHaveExpireTime();
+    Optional<List<ShortUrlEntity>> findAllByExpireTime();
 
-    @Query("select e from #{#entityName} e where e.expireTime <> -1 and e.expireTime < ?1 and e.deleteFlag = 0")
-    Optional<List<ShortUrlEntity>> findByExpireTime(Long expireTime);
+    @Modifying
+    @Query("update #{#entityName} e set e.deleteFlag = 1 where e.id in ?1 and e.deleteFlag = 0")
+    void batchDeleteByIds(List<String> ids);
 
 }
