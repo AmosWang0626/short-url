@@ -60,7 +60,7 @@ class ShortUrlApplicationTests {
 
         shortUrlDao.batchDeleteByIds(ids);
 
-        redisTemplate.opsForZSet().remove(SHORT_URL_EXPIRE, ids);
+        redisTemplate.opsForZSet().remove(SHORT_URL_EXPIRE, ids.toArray());
     }
 
     @Test
@@ -68,12 +68,10 @@ class ShortUrlApplicationTests {
         String SHORT_URL_EXPIRE = "SHORT_URL_EXPIRE";
 
         List<String> ids = new ArrayList<>();
-        ids.add("6dcf2a0b-45b7-433c-99f0-1664543bf020");
-        ids.add("79a920ea-5547-427a-b431-8f12b48c1712");
-        ids.add("90c66025-41a2-4216-ad5e-bed672ba7e21");
-        ids.add("bb6975dc-c841-4376-9551-b7aeff95746a");
+        ids.add("982664a9-a521-4c1f-b917-29d36d7ce7db");
+        ids.add("c55c84e2-700d-4910-8e36-59ef2000ceb1");
 
-        redisTemplate.opsForZSet().remove(SHORT_URL_EXPIRE, ids);
+        redisTemplate.opsForZSet().remove(SHORT_URL_EXPIRE, ids.toArray());
     }
 
 }
