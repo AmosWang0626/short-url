@@ -39,4 +39,8 @@ public class DateUtils {
         return toString(Instant.ofEpochMilli(timeMillis).atOffset(ZONE_OFFSET).toLocalDateTime());
     }
 
+    public static long getTimeSecond() {
+        return Instant.now().getEpochSecond();
+    }
+
 }
