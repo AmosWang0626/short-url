@@ -95,6 +95,11 @@
             <artifactId>HikariCP</artifactId>
             <version>3.4.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+            <version>5.0.0-alpha</version>
+        </dependency>
     </dependencies>
 
     <build>
