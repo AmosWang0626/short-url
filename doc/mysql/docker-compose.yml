@@ -1,0 +1,18 @@
+version: '3.5'
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./data:/var/lib/mysql"
+      - "./backup:/backup"
+      - "./init:/docker-entrypoint-initdb.d/"
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: "xxx"
+      MYSQL_DATABASE: short-url
+      # MYSQL_USER: amoswang
+      # MYSQL_PASSWORD: "amoswang"
