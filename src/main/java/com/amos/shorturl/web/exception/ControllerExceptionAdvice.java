@@ -1,6 +1,6 @@
 package com.amos.shorturl.web.exception;
 
-import com.amos.shorturl.common.api.CommonResponse;
+import com.amos.common.dto.response.SingleResponse;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,10 +19,10 @@ public class ControllerExceptionAdvice {
      * Controller统一参数校验
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse<String> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+    public SingleResponse<String> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         ObjectError objectError = e.getBindingResult().getAllErrors().get(0);
 
-        return CommonResponse.errorParam(objectError.getDefaultMessage());
+        return SingleResponse.ofErrorParam(objectError.getDefaultMessage());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.amos.shorturl.web.exception;
 
-import com.amos.shorturl.common.api.CommonResponse;
+import com.amos.common.dto.response.MultiResponse;
+import com.amos.common.dto.response.SingleResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.MethodParameter;
@@ -22,7 +23,8 @@ public class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return returnType.getParameterType() != CommonResponse.class;
+        return returnType.getParameterType() != SingleResponse.class
+                && returnType.getParameterType() != MultiResponse.class;
     }
 
     @Override
@@ -30,13 +32,13 @@ public class CommonResponseAdvice implements ResponseBodyAdvice<Object> {
         if (returnType.getGenericParameterType().equals(String.class)) {
             ObjectMapper objectMapper = new ObjectMapper();
             try {
-                return objectMapper.writeValueAsString(CommonResponse.success(body));
+                return objectMapper.writeValueAsString(SingleResponse.ofSuccess(body));
             } catch (JsonProcessingException e) {
-                return CommonResponse.fail();
+                return SingleResponse.ofFail();
             }
         }
 
-        return CommonResponse.success(body);
+        return SingleResponse.ofSuccess(body);
     }
 
 }

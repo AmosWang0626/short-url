@@ -20,6 +20,19 @@
     </properties>
 
     <dependencies>
+        <!-- common Begin -->
+        <!-- https://github.com/AmosWang0626/common -->
+        <dependency>
+            <groupId>com.amos</groupId>
+            <artifactId>common-dto</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amos</groupId>
+            <artifactId>common-util</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <!-- common End -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>

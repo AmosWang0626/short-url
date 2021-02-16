@@ -1,9 +1,9 @@
 package com.amos.shorturl.service.impl;
 
+import com.amos.common.util.date.DateUtils;
 import com.amos.shorturl.adapter.algorithm.UniqueShortUrl;
 import com.amos.shorturl.adapter.model.ShortUrlForm;
 import com.amos.shorturl.adapter.model.ShortUrlVO;
-import com.amos.shorturl.common.util.DateUtils;
 import com.amos.shorturl.domain.ShortUrlEntity;
 import com.amos.shorturl.service.ShortUrlBusiness;
 import com.amos.shorturl.service.ShortUrlService;
@@ -94,6 +94,6 @@ public class ShortUrlBusinessImpl implements ShortUrlBusiness {
             return "已过期";
         }
 
-        return DateUtils.toString(expireTime);
+        return DateUtils.getDateTime(DateUtils.toLocalDateTime(expireTime));
     }
 }

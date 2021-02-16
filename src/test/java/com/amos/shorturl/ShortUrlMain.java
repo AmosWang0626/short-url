@@ -1,6 +1,6 @@
 package com.amos.shorturl;
 
-import com.amos.shorturl.common.util.DateUtils;
+import com.amos.common.util.date.DateUtils;
 import org.yaml.snakeyaml.util.UriEncoder;
 
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class ShortUrlMain {
         System.out.println("LocalDateTime >>>>> " + expireTime2);
         System.out.println("System.currentTimeMillis() >>>>> " + System.currentTimeMillis());
 
-        System.out.println(DateUtils.toString(expireTime2));
+        System.out.println(DateUtils.toLocalDateTime(expireTime2));
         System.out.println(DateUtils.toTimeMillis(LocalDateTime.now()));
 
     }

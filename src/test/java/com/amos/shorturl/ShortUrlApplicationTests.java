@@ -1,6 +1,6 @@
 package com.amos.shorturl;
 
-import com.amos.shorturl.common.util.DateUtils;
+import com.amos.common.util.date.DateUtils;
 import com.amos.shorturl.domain.ShortUrlDao;
 import com.amos.shorturl.service.ExpireService;
 import org.junit.jupiter.api.Test;
@@ -31,9 +31,9 @@ class ShortUrlApplicationTests {
     @Test
     void generateExpireTime() {
         LocalDateTime localDateTime = LocalDateTime.now().plus(2, ChronoUnit.MINUTES);
-        System.out.println(DateUtils.toTimeMillis(localDateTime));
+        System.out.println(DateUtils.getDateTime(localDateTime));
         for (int i = 0; i < 17; i++) {
-            System.out.println(DateUtils.toTimeMillis(localDateTime.plus(new Random().nextInt(100), ChronoUnit.SECONDS)));
+            System.out.println(DateUtils.getDateTime(localDateTime.plus(new Random().nextInt(100), ChronoUnit.SECONDS)));
         }
     }
 
